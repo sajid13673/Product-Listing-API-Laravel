@@ -19,14 +19,6 @@ class ProductService
     }
     public function store($data)
     {
-        // $validation = $this->validate($data);
-        // if ($validation === true) {
-        //     $this->item->create($data->all());
-        //     $response = ['status' => true, 'message' => 'product Added successfully'];
-        // } else {
-        //     $response = ['status' => false, 'message' => $validation];
-        // }
-        // return $response;
         $this->item->create($data->all());
     }
     public function get($item_id)
@@ -50,10 +42,11 @@ class ProductService
     }
     public function validation($data)
     {
+        try{
         $sku = $data->sku;
         $name = $data->name;
         $price = $data->price;
-        $image = $data->image;
+        $image = $data->imageFile;
         $msg = $this->skuDuplication($sku);
         $imgValidate = $this->imageValidation($data);
         if ($msg === true) {
@@ -78,7 +71,10 @@ class ProductService
             }
         }
         $response = ['status' => false, 'message' => $msg];
-        return $response;
+        return $response;}
+        catch(Exception $e){
+            return $e->getMessage();
+        }
     }
     public function editValidation($data)
     {
@@ -143,22 +139,20 @@ class ProductService
                 $productSkuLower = strtolower($product['sku']);
                 if ($skuLower === $productSkuLower) {
                     return  "Sku already exists";
-                } else {
-                    $valid = true;
-                }
+                } 
             }
-            return $valid;
+            return true;
         }
     protected function imageValidation($data)
     {
-         if ($data->hasFile('image')) {
+         if ($data->hasFile('imageFile')) {
             try {
                 $data->validate([
-                    'image' => 'mimes:png,jpg,jpeg|max:2048'
+                    'imageFile' => 'mimes:png,jpg,jpeg|max:2048'
                 ], [
-                    'image.required' => 'requires an image',
-                    'image.mimes' => 'The image file should be JPG, JPEG or PNG',
-                    'image.max' => 'The maximum allowed image size is 2mb'
+                    'imageFile.required' => 'requires an image',
+                    'imageFile.mimes' => 'The image file should be JPG, JPEG or PNG',
+                    'imageFile.max' => 'The maximum allowed image size is 2mb'
                 ]);
                 return true;
             } catch (Exception $m) {

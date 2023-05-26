@@ -43,6 +43,7 @@ class ProductController extends Controller
     }
     public function validation(Request $request)
     {
+        //return ['status' => 'false', 'message' => 'fine'];
         return ProductFacade::validation($request);
     }
     public function EditValidation(Request $request)
