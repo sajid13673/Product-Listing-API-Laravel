@@ -1,10 +1,8 @@
 <?php
 
 namespace domain\Services;
-
 use App\Models\Product;
 use Exception;
-use GuzzleHttp\Psr7\Message;
 
 class ProductService
 {
@@ -124,20 +122,6 @@ class ProductService
         $response = ['status' => false, 'message' => $msg];
         return $response;
     }
-    // protected function skuValidation($sku)
-    // {
-    //     //$skuLower = strtolower($sku);
-    //     $result = $this->skuDuplication($sku);
-    //     if ($result === true) {
-    //         if ($sku == "") {
-    //             $result = "Please enter SKU";
-    //         } elseif (!preg_match("/^([A-Za-z 0-9]+)$/", $sku) ||  strlen($sku) > 100) {
-    //             $result = "Please, provide a valid SKU";
-    //         }
-    //         return $result;
-    //     }
-    //     return $result;
-    // }
     protected function skuDuplication($sku)
         {
         $skuLower = strtolower($sku);
