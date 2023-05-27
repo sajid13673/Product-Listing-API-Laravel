@@ -27,6 +27,13 @@ class ProductService
     }
     public function update($data, $item_id)
     {
+        if ($data['status'] == 'true')  //appending to FormData in React converts the boolean into string therefore, this IF statement converts back. 
+        { 
+            $data['status'] = true;
+        }
+        elseif($data['status'] == 'false'){
+            $data['status'] = false;
+        }
         $item = $this->item->find($item_id);
         $item->update($this->edit($item, $data));
         
