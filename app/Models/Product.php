@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,7 +14,12 @@ class Product extends Model
         'name',
         'price',
         'status',
-        'imageName',
-        'imageLink'
+        'image_id'
     ];
+    
+    public function images()
+    {
+        return $this->belongsTo(Image::class,'image_id','id');
+    }
+    
 }

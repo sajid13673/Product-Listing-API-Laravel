@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 use domain\Facades\ProductFacade;
 use Illuminate\Http\Request;
@@ -32,7 +31,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        return ProductFacade::update($request, $id);
+        ProductFacade::update($request, $id);
     }
     /**
      * Remove the specified resource from storage.

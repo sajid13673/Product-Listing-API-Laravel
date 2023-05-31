@@ -16,8 +16,9 @@ return new class extends Migration
             $table->string('sku')->nullable(false)->unique();
             $table->string('name')->nullable(false);
             $table->string('price')->nullable(false);
-            $table->string('imageName')->nullable();
-            $table->string('imageLink')->nullable();
+            $table->bigInteger('image_id')->nullable();
+            //$table->string('imageName')->nullable();
+            //$table->string('imageLink')->nullable();
             $table->boolean('status')->default(false);
             $table->timestamps();
         });
