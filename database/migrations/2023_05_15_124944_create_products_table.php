@@ -15,10 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('sku')->nullable(false)->unique();
             $table->string('name')->nullable(false);
-            $table->string('price')->nullable(false);
+            $table->decimal('price', $precision = 8, $scale = 2)->nullable(false);
             $table->bigInteger('image_id')->nullable();
-            //$table->string('imageName')->nullable();
-            //$table->string('imageLink')->nullable();
             $table->boolean('status')->default(false);
             $table->timestamps();
         });
