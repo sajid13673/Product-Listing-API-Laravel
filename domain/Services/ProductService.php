@@ -72,8 +72,10 @@ class ProductService
         $item = $this->item->find($item_id);
         $imgId = $item['image_id'];
         $item->delete();
-        $img = $this->pic->find($imgId);
-        $img->delete();
+        if ($imgId !== null) {
+            $img = $this->pic->find($imgId);
+            $img->delete();
+        }
     }
     protected function edit(Product $item, $data)
     {
@@ -156,7 +158,6 @@ class ProductService
 
     public function sort($data)
     {
-        //return $data;
         $key = $data['key'];
         $order = $data['order'];
         $products = $this->item->with(['images' => function($query) {
