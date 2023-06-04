@@ -24,5 +24,7 @@ Route::apiResource('item', ProductController::class);
 Route::prefix('/item')->group(function(){
     Route::post('/validate',[ProductController::class, "validation"])->name('product.validate');
     Route::post('/editValidation',[ProductController::class, "editValidation"])->name('product.editValidation');
+    Route::post('/sort',[ProductController::class, "sort"])->name('product.sort');
+
 });
 

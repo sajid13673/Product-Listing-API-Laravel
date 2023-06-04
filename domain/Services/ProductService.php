@@ -117,7 +117,6 @@ class ProductService
     }
     public function editValidation($data)
     {
-
         $sku = $data->sku;
         $name = $data->name;
         $price = $data->price;
@@ -153,6 +152,17 @@ class ProductService
         }
         $response = ['status' => false, 'message' => $msg];
         return $response;
+    }
+
+    public function sort($data)
+    {
+        //return $data;
+        $key = $data['key'];
+        $order = $data['order'];
+        $products = $this->item->with(['images' => function($query) {
+            return $query->select(['id', 'imageName','imageLink']);
+        }])->orderBy($key, $order)->get();
+        return $products;
     }
     protected function skuDuplication($sku)
     {

@@ -48,4 +48,8 @@ class ProductController extends Controller
     {
         return ProductFacade::editValidation($request);
     }
+    public function sort(Request $request)
+    {
+        return ProductFacade::sort($request);
+    }
 }
