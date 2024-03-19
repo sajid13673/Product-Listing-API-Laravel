@@ -1,5 +1,8 @@
 <?php
 namespace App\Http\Controllers;
+
+use App\Http\Requests\ProductPostRequest;
+use App\Http\Requests\ProductPutRequest;
 use domain\Facades\ProductFacade;
 use Illuminate\Http\Request;
 
@@ -15,7 +18,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductPostRequest $request)
     {
         ProductFacade::store($request);
     }
@@ -29,9 +32,9 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ProductPutRequest $request, string $id)
     {
-        ProductFacade::update($request, $id);
+    return ProductFacade::update($request, $id);
     }
     /**
      * Remove the specified resource from storage.
@@ -39,14 +42,6 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         ProductFacade::delete($id);
-    }
-    public function validation(Request $request)
-    {
-        return ProductFacade::validation($request);
-    }
-    public function EditValidation(Request $request)
-    {
-        return ProductFacade::editValidation($request);
     }
     public function sort(Request $request)
     {
