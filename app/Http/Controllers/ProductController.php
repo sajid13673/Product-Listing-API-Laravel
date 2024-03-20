@@ -11,16 +11,16 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return ProductFacade::all();
+        return ProductFacade::all($request);
     }
     /**
      * Store a newly created resource in storage.
      */
     public function store(ProductPostRequest $request)
     {
-        ProductFacade::store($request);
+        return ProductFacade::store($request);
     }
     /**
      * Display the specified resource.
@@ -34,17 +34,13 @@ class ProductController extends Controller
      */
     public function update(ProductPutRequest $request, string $id)
     {
-    return ProductFacade::update($request, $id);
+        return ProductFacade::update($request, $id);
     }
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        ProductFacade::delete($id);
-    }
-    public function sort(Request $request)
-    {
-        return ProductFacade::sort($request);
+        return ProductFacade::delete($id);
     }
 }

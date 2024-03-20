@@ -1,6 +1,7 @@
 <?php
 
 namespace domain\Services;
+
 use App\Models\Product;
 use App\Models\Image;
 use Exception;
@@ -16,22 +17,32 @@ class ProductService
         $this->item = new Product();
         $this->pic = new Image();
     }
-    public function all()
+    public function all($request)
     {
-        $products = $this->item->with(['images' => function($query) {
-            return $query->select(['id', 'imageName','imageLink']);
+        if($request->sort){
+            $products = $this->item->with(['images' => function ($query) {
+                return $query->select(['id', 'imageName', 'imageLink']);
+            }])->orderBy($request->sort, $request->order)->get();
+            return $products;
+        }
+        $products = $this->item->with(['images' => function ($query) {
+            return $query->select(['id', 'imageName', 'imageLink']);
         }])->get();
-        
         return $products;
     }
     public function store($data)
     {
-        $imageName = $data['imageName'];
-        if (!empty($imageName)) {
-            $img = $this->pic->create($data->all());
-            $data['image_id'] = $img['id'];
-        }
+        try {
+            $imageName = $data['imageName'];
+            if (!empty($imageName)) {
+                $img = $this->pic->create($data->all());
+                $data['image_id'] = $img['id'];
+            }
             $this->item->create($data->all());
+            return response()->json(["status" => true, "message" => "Product Successfully Added"], 200);
+        } catch (Exception $e) {
+            return response()->json(["status" => false, "message" => $e->getMessage()], 500);
+        }
     }
     public function get($item_id)
     {
@@ -39,46 +50,46 @@ class ProductService
     }
     public function update($data, $item_id)
     {
-        $item = $this->item->find($item_id);
-        //If formData has an image file
-        if ($data->hasFile('imageFile')) {
-            $imgId = $item['image_id'];
-            $image = $this->pic->find($imgId);
-            //If the item does not have an image
-            if ($image === null) {
-                $image = $this->pic->create($data->all());
-                $data['image_id'] = $image['id'];
+        try {
+            $item = $this->item->find($item_id);
+            //If formData has an image file
+            if ($data->hasFile('imageFile')) {
+                $imgId = $item['image_id'];
+                $image = $this->pic->find($imgId);
+                //If the item does not have an image
+                if ($image === null) {
+                    $image = $this->pic->create($data->all());
+                    $data['image_id'] = $image['id'];
+                }
+                //If the item already has an image
+                else {
+                    $image->update($data->toArray());
+                }
             }
-            //If the item already has an image
-            else {
-                $image->update($data->toArray());
-            }
+            $item->update($this->edit($item, $data));
+            return response()->json(["status" => true, "message" => "Product Successfully Updated"], 200);
+        } catch (Exception $e) {
+            return response()->json(["status" => false, "message" => $e->getMessage()], 500);
         }
-            return $item->update($this->edit($item, $data));
     }
     public function delete($item_id)
     {
-        $item = $this->item->find($item_id);
-        $imgId = $item['image_id'];
-        $item->delete();
-        if ($imgId !== null) {
-            $img = $this->pic->find($imgId);
-            $img->delete();
+        try {
+            $item = $this->item->find($item_id);
+            $imgId = $item['image_id'];
+            $item->delete();
+            if ($imgId !== null) {
+                $img = $this->pic->find($imgId);
+                $img->delete();
+            }
+            return response()->json(['status' => true, "message" => "Product Successfully Deleted"], 200);
+        } catch (Exception $e) {
+            return response()->json(["status" => false, "message" => $e->getMessage()], 500);
         }
     }
     protected function edit(Product $item, $data)
     {
         return array_merge($item->toArray(), $data->toArray());
-    }
-
-    public function sort($data)
-    {
-        $key = $data['key'];
-        $order = $data['order'];
-        $products = $this->item->with(['images' => function($query) {
-            return $query->select(['id', 'imageName','imageLink']);
-        }])->orderBy($key, $order)->get();
-        return $products;
     }
     protected function skuDuplication($sku)
     {
@@ -91,7 +102,7 @@ class ProductService
             }
         }
         return true;
-    // }
+    }
     // protected function imageValidation($data)
     // {
     //     if ($data->hasFile('imageFile')) {
