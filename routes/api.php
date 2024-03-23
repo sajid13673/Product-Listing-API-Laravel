@@ -20,4 +20,8 @@ use Illuminate\Support\Facades\Route;
 // });
 Route::apiResource('item', ProductController::class);
 
+Route::prefix('/item')->group(function(){
+    Route::post('/checkSku',[ProductController::class, "checkSkuDuplicate"])->name('product.checkSku');
+
+});
 

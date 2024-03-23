@@ -1,7 +1,6 @@
 <?php
 
 namespace domain\Services;
-
 use App\Models\Product;
 use App\Models\Image;
 use Exception;
@@ -19,15 +18,16 @@ class ProductService
     }
     public function all($request)
     {
+        $perpage = $request->per_page ? $request->per_page : 6;
         if($request->sort){
             $products = $this->item->with(['images' => function ($query) {
                 return $query->select(['id', 'imageName', 'imageLink']);
-            }])->orderBy($request->sort, $request->order)->get();
+            }])->orderBy($request->sort, $request->order)->paginate($perpage);
             return $products;
         }
         $products = $this->item->with(['images' => function ($query) {
             return $query->select(['id', 'imageName', 'imageLink']);
-        }])->get();
+        }])->paginate($perpage);
         return $products;
     }
     public function store($data)
@@ -91,35 +91,17 @@ class ProductService
     {
         return array_merge($item->toArray(), $data->toArray());
     }
-    protected function skuDuplication($sku)
+    public function checkSkuDuplicate($request)
     {
+        $sku = $request->sku;
         $skuLower = strtolower($sku);
         $products = $this->item->all();
         foreach ($products as $product) {
             $productSkuLower = strtolower($product['sku']);
             if ($skuLower === $productSkuLower) {
-                return  "Sku already exists";
+                return ["duplicate" => true];
             }
         }
-        return true;
+        return ["duplicate" => false];
     }
-    // protected function imageValidation($data)
-    // {
-    //     if ($data->hasFile('imageFile')) {
-    //         try {
-    //             $data->validate([
-    //                 'imageFile' => 'mimes:png,jpg,jpeg|max:2048'
-    //             ], [
-    //                 'imageFile.required' => 'requires an image',
-    //                 'imageFile.mimes' => 'The image file should be JPG, JPEG or PNG',
-    //                 'imageFile.max' => 'The maximum allowed image size is 2mb'
-    //             ]);
-    //             return true;
-    //         } catch (Exception $m) {
-    //             return $m->getMessage();
-    //         }
-    //     } else {
-    //         return true;
-    //     }
-    // }
 }

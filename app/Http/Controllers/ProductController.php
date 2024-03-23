@@ -43,4 +43,7 @@ class ProductController extends Controller
     {
         return ProductFacade::delete($id);
     }
+    public function checkSkuDuplicate(Request $request){
+        return ProductFacade::checkSkuDuplicate($request);
+    }
 }
